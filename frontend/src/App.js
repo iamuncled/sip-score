@@ -8,6 +8,8 @@ function App() {
   const [web3, setWeb3] = useState(null);
   const [account, setAccount] = useState(null);
   const [contract, setContract] = useState(null);
+  const [nftId, setNftId] = useState('');
+  const [pointsEarned, setPointsEarned] = useState('');
 
   useEffect(() => {
     const initWeb3 = async () => {
@@ -54,6 +56,27 @@ function App() {
     }
   };
 
+  const updateBalance = async (tokenId, points) => {
+    if (contract && account) {
+      try {
+        await contract.methods.updateBalance(tokenId, points).send({ from: account });
+        alert('Balance updated successfully!');
+      } catch (error) {
+        console.error('Error updating balance:', error);
+      }
+    } else {
+      alert('Please connect your wallet first.');
+    }
+  };
+
+  const handleUpdateBalanceClick = () => {
+    if (nftId && pointsEarned) {
+      updateBalance(nftId, pointsEarned);
+    } else {
+      alert('Please enter a valid NFT ID and Points Earned.');
+    }
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -62,9 +85,10 @@ function App() {
         <button onClick={mintNFT}>Mint</button>
         <button onClick={connectWallet}>Connect</button>
         <label htmlFor="nft-id">NFT ID:</label>
-        <input type="text" id="nft-id" />
+        <input type="text" id="nft-id" value={nftId} onChange={(e) => setNftId(e.target.value)} />
         <label htmlFor="points-earned">Points Earned:</label>
-        <input type="text" id="points-earned" />
+        <input type="text" id="points-earned" value={pointsEarned} onChange={(e) => setPointsEarned(e.target.value)} />
+        <button onClick={handleUpdateBalanceClick}>Update Balance</button>
         <div id="balance">Your balance is: x</div>
         <button>Redeem Reward</button>
       </header>
