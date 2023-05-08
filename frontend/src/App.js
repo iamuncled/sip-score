@@ -10,6 +10,7 @@ function App() {
   const [contract, setContract] = useState(null);
   const [nftId, setNftId] = useState('');
   const [pointsEarned, setPointsEarned] = useState('');
+  const [customerBalance, setCustomerBalance] = useState(0);
 
   useEffect(() => {
     const initWeb3 = async () => {
@@ -35,6 +36,7 @@ function App() {
         await window.ethereum.request({ method: 'eth_requestAccounts' });
         const accounts = await web3.eth.getAccounts();
         setAccount(accounts[0]);
+        fetchCustomerBalance();
       } catch (error) {
         console.error('User denied account access');
       }
@@ -61,6 +63,7 @@ function App() {
       try {
         await contract.methods.updateBalance(tokenId, points).send({ from: account });
         alert('Balance updated successfully!');
+        fetchCustomerBalance();
       } catch (error) {
         console.error('Error updating balance:', error);
       }
@@ -77,6 +80,17 @@ function App() {
     }
   };
 
+  const fetchCustomerBalance = async () => {
+    if (contract && account) {
+      try {
+        const balance = await contract.methods.pointsBalanceOf(account).call();
+        setCustomerBalance(balance);
+      } catch (error) {
+        console.error('Error fetching customer balance:', error);
+      }
+    }
+  };  
+
   return (
     <div className="App">
       <header className="App-header">
@@ -89,7 +103,7 @@ function App() {
         <label htmlFor="points-earned">Points Earned:</label>
         <input type="text" id="points-earned" value={pointsEarned} onChange={(e) => setPointsEarned(e.target.value)} />
         <button onClick={handleUpdateBalanceClick}>Update Balance</button>
-        <div id="balance">Your balance is: x</div>
+        <div id="balance">Your balance is: {customerBalance}</div>
         <button>Redeem Reward</button>
       </header>
     </div>
