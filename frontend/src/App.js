@@ -83,13 +83,15 @@ function App() {
   const fetchCustomerBalance = async () => {
     if (contract && account) {
       try {
-        const balance = await contract.methods.pointsBalanceOf(account).call();
+        const tokenId = await contract.methods.tokenOfOwnerByIndex(account, 0).call();
+        const balance = await contract.methods.getBalance(tokenId).call();
         setCustomerBalance(balance);
       } catch (error) {
         console.error('Error fetching customer balance:', error);
       }
     }
-  };  
+  };
+  
 
   return (
     <div className="App">
