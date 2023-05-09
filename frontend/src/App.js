@@ -11,6 +11,7 @@ function App() {
   const [nftId, setNftId] = useState('');
   const [pointsEarned, setPointsEarned] = useState('');
   const [customerBalance, setCustomerBalance] = useState(0);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     const initWeb3 = async () => {
@@ -90,8 +91,28 @@ function App() {
         console.error('Error fetching customer balance:', error);
       }
     }
-  };
+  };  
+
+  const closeConfirmation = () => {
+    setShowConfirmation(false);
+  };t
+
+  const redeemReward = async () => {
+    if (contract && account) {
+      const tokenId = await contract.methods.tokenOfOwnerByIndex(account, 0).call();
+      const pointsToRedeem = 10; // Set this to the number of points needed to redeem a reward
   
+      try {
+        await contract.methods.redeem(tokenId, pointsToRedeem).send({ from: account });
+        alert('Reward successfully redeemed!');
+        setShowConfirmation(true);
+      } catch (error) {
+        console.error('Error redeeming reward:', error);
+      }
+    } else {
+      alert('Please connect your wallet first.');
+    }
+  };
 
   return (
     <div className="App">
@@ -106,7 +127,14 @@ function App() {
         <input type="text" id="points-earned" value={pointsEarned} onChange={(e) => setPointsEarned(e.target.value)} />
         <button onClick={handleUpdateBalanceClick}>Update Balance</button>
         <div id="balance">Your balance is: {customerBalance}</div>
-        <button>Redeem Reward</button>
+        <button onClick={redeemReward}>Redeem Reward</button>
+        {showConfirmation && (
+          <div className="confirmation-screen">
+            <h2>Redemption Confirmation</h2>
+            <p>Show this screen to the staff to claim your reward.</p>
+            <button onClick={closeConfirmation}>Close</button>
+          </div>
+        )}
       </header>
     </div>
   );
