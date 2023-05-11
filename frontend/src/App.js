@@ -49,7 +49,7 @@ function App() {
   const mintNFT = async () => {
     if (contract && account) {
       try {
-        await contract.methods.mint(account).send({ from: account });
+        await contract.methods.mintNFT().send({ from: account });
         alert('NFT successfully minted!');
       } catch (error) {
         console.error('Error minting NFT:', error);
@@ -84,23 +84,23 @@ function App() {
   const fetchCustomerBalance = async () => {
     if (contract && account) {
       try {
-        const tokenId = await contract.methods.tokenOfOwnerByIndex(account, 0).call();
+        const tokenId = await contract.methods.getTokenId(account).call();
         const balance = await contract.methods.getBalance(tokenId).call();
         setCustomerBalance(balance);
       } catch (error) {
         console.error('Error fetching customer balance:', error);
       }
     }
-  };  
+  };
 
   const closeConfirmation = () => {
     setShowConfirmation(false);
-  };t
+  };
 
   const redeemReward = async () => {
     if (contract && account) {
       const tokenId = await contract.methods.tokenOfOwnerByIndex(account, 0).call();
-      const pointsToRedeem = 10; // Set this to the number of points needed to redeem a reward
+      const pointsToRedeem = 50; // Set this to the number of points needed to redeem a reward
   
       try {
         await contract.methods.redeem(tokenId, pointsToRedeem).send({ from: account });

@@ -7,11 +7,15 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract SipScore is ERC721, Ownable {
     uint256 private tokenIdCounter;
     mapping(uint256 => uint256) private balances;
+    mapping(address => uint256) private ownersToTokenId;
+    mapping(address => bool) private hasMinted;
 
     constructor() ERC721("SipScore", "SS") {}
 
-    function mintNFT(address recipient) public onlyOwner {
-        _safeMint(recipient, tokenIdCounter);
+   function mintNFT() public {
+        require(!hasMinted[msg.sender], "Address has already minted an NFT");
+        _safeMint(msg.sender, tokenIdCounter);
+        hasMinted[msg.sender] = true;
         tokenIdCounter++;
     }
 
@@ -30,6 +34,11 @@ contract SipScore is ERC721, Ownable {
         require(balances[tokenId] >= points, "Not enough points");
 
         balances[tokenId] -= points;
+    }
+    
+    function getTokenId(address owner) public view returns (uint256) {
+        require(_exists(ownersToTokenId[owner]), "No token owned by this address");
+        return ownersToTokenId[owner];
     }
 }
 
