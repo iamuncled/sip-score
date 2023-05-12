@@ -32,12 +32,12 @@ function App() {
   }, []);
 
   const connectWallet = async () => {
+    console.log("connectWallet function called");
     if (window.ethereum) {
       try {
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const accounts = await web3.eth.getAccounts();
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         setAccount(accounts[0]);
-        fetchCustomerBalance();
+        fetchCustomerBalance(accounts[0]);
       } catch (error) {
         console.error('User denied account access');
       }
@@ -45,7 +45,7 @@ function App() {
       alert('Please install MetaMask to use this app.');
     }
   };
-
+  
   const mintNFT = async () => {
     if (contract && account) {
       try {
