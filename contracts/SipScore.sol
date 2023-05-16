@@ -15,6 +15,7 @@ contract SipScore is ERC721, Ownable {
    function mintNFT() public {
         require(!hasMinted[msg.sender], "Address has already minted an NFT");
         _safeMint(msg.sender, tokenIdCounter);
+        ownersToTokenId[msg.sender] = tokenIdCounter;
         hasMinted[msg.sender] = true;
         tokenIdCounter++;
     }

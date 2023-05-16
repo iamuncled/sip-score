@@ -469,7 +469,7 @@ const sipScoreAbi = [
   }
   ];
   
-  const sipScoreAddress = "0x39affE92bB94c9785771Bc628415Fc239eeE6642";
+  const sipScoreAddress = "0xD67701Ef7990A28F704186fEb3C194D0606Ee6E7";
   
   export { sipScoreAbi, sipScoreAddress };
   

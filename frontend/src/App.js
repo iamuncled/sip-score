@@ -29,7 +29,13 @@ function App() {
       }
     };
     initWeb3();
+    getCurrentWalletConnected(); 
+    addWalletListener();
   }, []);
+
+  useEffect(() => {
+    fetchCustomerBalance(account);
+  }, [account, contract]);
 
   const connectWallet = async () => {
     if (window.ethereum) {
@@ -112,11 +118,13 @@ function App() {
     }
   };
 
-  const fetchCustomerBalance = async () => {
+  const fetchCustomerBalance = async (account) => {
     if (contract && account) {
       try {
         const tokenId = await contract.methods.getTokenId(account).call();
+        console.log('Token ID:', tokenId); // Debug: log the token ID
         const balance = await contract.methods.getBalance(tokenId).call();
+        console.log('Balance:', balance); // Debug: log the balance
         setCustomerBalance(balance);
       } catch (error) {
         console.error('Error fetching customer balance:', error);
