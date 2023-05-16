@@ -37,9 +37,10 @@ contract SipScore is ERC721, Ownable {
         balances[tokenId] -= points;
     }
     
-    function getTokenId(address owner) public view returns (uint256) {
-        require(_exists(ownersToTokenId[owner]), "No token owned by this address");
-        return ownersToTokenId[owner];
-    }
+    function getTokenId(address owner) public view returns (uint256, bool) {
+    uint256 tokenId = ownersToTokenId[owner];
+    bool exists = (ownerOf(tokenId) == owner);
+    return (tokenId, exists);
+}
 }
 

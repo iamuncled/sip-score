@@ -121,11 +121,19 @@ function App() {
   const fetchCustomerBalance = async (account) => {
     if (contract && account) {
       try {
-        const tokenId = await contract.methods.getTokenId(account).call();
+        const response = await contract.methods.getTokenId(account).call();
+        const tokenId = response[0];
+        const exists = response[1];
+        console.log('Token exists:', exists); // Debug: log if the token exists
         console.log('Token ID:', tokenId); // Debug: log the token ID
-        const balance = await contract.methods.getBalance(tokenId).call();
-        console.log('Balance:', balance); // Debug: log the balance
-        setCustomerBalance(balance);
+        if (exists) {
+          const balance = await contract.methods.getBalance(tokenId).call();
+          console.log('Balance:', balance); // Debug: log the balance
+          setCustomerBalance(balance);
+        } else {
+          console.log('No token owned by this address');
+          setCustomerBalance(0);
+        }
       } catch (error) {
         console.error('Error fetching customer balance:', error);
       }
@@ -139,7 +147,16 @@ function App() {
   const redeemReward = async () => {
     if (contract && account) {
       try {
-        const tokenId = await contract.methods.getTokenId(account).call();
+        const response = await contract.methods.getTokenId(account).call();
+        const tokenId = response[0];
+        const exists = response[1];
+
+        // If no token owned by the account, exit early
+        if (!exists) {
+          alert('No token owned by this account.');
+          return;
+        }
+
         const pointsToRedeem = 50; // Set this to the number of points needed to redeem a reward
         
         // Fetch current balance
@@ -160,7 +177,8 @@ function App() {
     } else {
       alert('Please connect your wallet first.');
     }
-  };  
+  };
+ 
 
   return (
     <div className="App">

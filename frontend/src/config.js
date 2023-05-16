@@ -187,6 +187,11 @@ const sipScoreAbi = [
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -469,7 +474,7 @@ const sipScoreAbi = [
   }
   ];
   
-  const sipScoreAddress = "0xD67701Ef7990A28F704186fEb3C194D0606Ee6E7";
+  const sipScoreAddress = "0x403f30783D160fDd5c97C43b1554B00f5250967c";
   
   export { sipScoreAbi, sipScoreAddress };
   
