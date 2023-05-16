@@ -138,10 +138,19 @@ function App() {
 
   const redeemReward = async () => {
     if (contract && account) {
-      const tokenId = await contract.methods.tokenOfOwnerByIndex(account, 0).call();
-      const pointsToRedeem = 50; // Set this to the number of points needed to redeem a reward
-  
       try {
+        const tokenId = await contract.methods.getTokenId(account).call();
+        const pointsToRedeem = 50; // Set this to the number of points needed to redeem a reward
+        
+        // Fetch current balance
+        const currentBalance = await contract.methods.getBalance(tokenId).call();
+  
+        // Check if there are enough points
+        if (currentBalance < pointsToRedeem) {
+          alert('You do not have enough points to redeem this reward.');
+          return;
+        }
+  
         await contract.methods.redeem(tokenId, pointsToRedeem).send({ from: account });
         alert('Reward successfully redeemed!');
         setShowConfirmation(true);
@@ -151,7 +160,7 @@ function App() {
     } else {
       alert('Please connect your wallet first.');
     }
-  };
+  };  
 
   return (
     <div className="App">
