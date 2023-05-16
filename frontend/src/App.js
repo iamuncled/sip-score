@@ -32,12 +32,12 @@ function App() {
   }, []);
 
   const connectWallet = async () => {
-    console.log("connectWallet function called");
     if (window.ethereum) {
       try {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         setAccount(accounts[0]);
         fetchCustomerBalance(accounts[0]);
+        console.log(accounts[0]);
       } catch (error) {
         console.error('User denied account access');
       }
@@ -45,6 +45,37 @@ function App() {
       alert('Please install MetaMask to use this app.');
     }
   };
+  
+  const getCurrentWalletConnected = async () => {
+    if (window.ethereum) {
+      try {
+        const accounts = await window.ethereum.request({ method: "eth_accounts" });
+        if (accounts.length > 0) {
+          setAccount(accounts[0]);
+          fetchCustomerBalance(accounts[0]);
+          console.log(accounts[0]);
+        } else {
+          console.log("Connect to MetaMask using the Connect button");
+        }
+      } catch (err) {
+        console.error(err.message);
+      }
+    } else {
+      console.log("Please install MetaMask");
+    }
+  };
+  
+  const addWalletListener = () => {
+    if (window.ethereum) {
+      window.ethereum.on("accountsChanged", (accounts) => {
+        setAccount(accounts[0]);
+        fetchCustomerBalance(accounts[0]);
+        console.log(accounts[0]);
+      });
+    } else {
+      console.log("Please install MetaMask");
+    }
+  };  
   
   const mintNFT = async () => {
     if (contract && account) {
@@ -120,7 +151,11 @@ function App() {
         <h1>SipScore</h1>
         <h3>The ultimate reward system for your bar</h3>
         <button onClick={mintNFT}>Mint</button>
-        <button onClick={connectWallet}>Connect</button>
+        <button onClick={connectWallet}>
+            {account && account.length > 0
+              ? `Connected: ${account.substring(0, 5)}...${account.substring(38)}`
+              : "Connect"}
+          </button>
         <label htmlFor="nft-id">NFT ID:</label>
         <input type="text" id="nft-id" value={nftId} onChange={(e) => setNftId(e.target.value)} />
         <label htmlFor="points-earned">Points Earned:</label>
