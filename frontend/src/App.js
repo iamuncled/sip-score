@@ -178,15 +178,16 @@ function App() {
         <label htmlFor="points-earned">Points Earned:</label>
         <input type="text" id="points-earned" value={pointsEarned} onChange={(e) => setPointsEarned(e.target.value)} />
         <button onClick={handleUpdateBalanceClick}>Update Balance</button>
-        <div id="balance">Your balance is: {customerBalance}</div>
+        <div id="balance" style={{ fontSize: '17px' }}>
+          Your balance is: {customerBalance}
+        </div>
         <button onClick={redeemReward}>Redeem Reward</button>
         {showConfirmation && (
-          <div className="confirmation-screen">
-            <h2>Redemption Confirmation</h2>
-            <p>Show this screen to the staff to claim your reward.</p>
-            <button onClick={closeConfirmation}>Close</button>
-          </div>
-        )}
+        <div className="confirmation-message">
+          Reward successfully redeemed!
+          <button className="close-button" onClick={() => setShowConfirmation(false)}>Close</button>
+        </div>
+    )}
       </header>
     </div>
   );

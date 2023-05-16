@@ -33,7 +33,7 @@ h1 {
 }
 
 h3 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 400;
   margin: 0;
   padding: 0;
@@ -73,9 +73,32 @@ label {
   font-size: 18px;
   font-weight: 600;
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 0px;
 }
 
 #balance {
   font-weight: 600;
 }
+
+.confirmation-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 18px;
+  background-color: rgb(177, 54, 210);
+  color: white;
+  text-align: center;
+  z-index: 1000;
+  font-size: 22px;
+  font-family: "Poppins", sans-serif;
+}
+
+.close-button {
+  margin-left: 20px;
+}
+
+balance-display {
+  font-size: 24px;
+}
+
