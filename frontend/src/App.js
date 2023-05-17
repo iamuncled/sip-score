@@ -12,6 +12,7 @@ function App() {
   const [pointsEarned, setPointsEarned] = useState('');
   const [customerBalance, setCustomerBalance] = useState(0);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const DEPLOYER_ACCOUNT = '0x7560a8a41e7ECBeD7d79385d2fCc414906a1Ad05'; // Replace with the deployer's account address
 
   useEffect(() => {
     const initWeb3 = async () => {
@@ -86,8 +87,17 @@ function App() {
   const mintNFT = async () => {
     if (contract && account) {
       try {
-        await contract.methods.mintNFT().send({ from: account });
-        alert('NFT successfully minted!');
+        const response = await contract.methods.getTokenId(account).call();
+        const exists = response[1];
+        if (exists) {
+          alert('You have already minted an NFT. You cannot mint more than one.');
+          return;
+        }
+        const receipt = await contract.methods.mintNFT().send({ from: account });
+        const transferEvent = receipt.events.Transfer;
+        const tokenId = transferEvent.returnValues.tokenId;
+
+        alert(`NFT successfully minted! Your token ID is ${tokenId}`);
       } catch (error) {
         console.error('Error minting NFT:', error);
       }
@@ -98,6 +108,10 @@ function App() {
 
   const updateBalance = async (tokenId, points) => {
     if (contract && account) {
+      if (account.toLowerCase() !== DEPLOYER_ACCOUNT.toLowerCase()) {
+        alert('Only the deployer can update balances.');
+        return;
+      }
       try {
         await contract.methods.updateBalance(tokenId, points).send({ from: account });
         alert('Balance updated successfully!');
@@ -109,6 +123,7 @@ function App() {
       alert('Please connect your wallet first.');
     }
   };
+  
 
   const handleUpdateBalanceClick = () => {
     if (nftId && pointsEarned) {
@@ -158,8 +173,6 @@ function App() {
         }
 
         const pointsToRedeem = 50; // Set this to the number of points needed to redeem a reward
-        
-        // Fetch current balance
         const currentBalance = await contract.methods.getBalance(tokenId).call();
   
         // Check if there are enough points
