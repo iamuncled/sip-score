@@ -197,7 +197,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>SipScore</h1>
-        <h3>The ultimate reward system for your bar</h3>
+        <h3>Elevating loyalty programs with blockchain</h3>
         <button onClick={mintNFT}>Mint</button>
         <button onClick={connectWallet}>
             {account && account.length > 0
